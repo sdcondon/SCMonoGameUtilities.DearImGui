@@ -9,7 +9,7 @@ namespace SCMonoGameUtilities.DearImGui.Demos;
 
 public class Program : Game
 {
-    // The GUI renderer. This is responsible for drawing the GUI:
+    // The GUI renderer - this is responsible for drawing the GUI
     private readonly ImGuiRenderer guiRenderer;
 
     // Main demo window
@@ -62,11 +62,11 @@ public class Program : Game
         guiRenderer = new ImGuiRenderer(this);
 
         // We have classes encapsulating each of our individual demos. While most of them don't
-        // have any dependency on the game itself (and we can thus use field initialisers for them - see above),
+        // have any dependency on the game itself (and we can thus use inline field initialisers for them - see above),
         // a few do, so we create them here, passing along what they need.
         //
         // Note that this includes the main demo window, which we don't want to give hard-coded knowledge of the
-        // other windows, but does include menu items for opening and closing them - so we provide it with menu
+        // other windows, but does include menu items for opening and closing them. So, we provide it with menu
         // item objects that include what is essentially a callback to handle being selected and unselected.
         displaySettingsWindow = new(Window, graphicsDeviceManager);
         modelAndControls = new(GraphicsDevice, Content, "suzanne");
@@ -132,7 +132,7 @@ public class Program : Game
         ImGui.GetIO().Fonts.AddFontFromFileTTF("Content\\Fonts\\Roboto-Regular.ttf", 16);
         guiRenderer.BuildFontAtlas();
 
-        // A couple of our demo windows use content, too (namely, the "suzanne" model), so tell them to load what they need:
+        // A couple of our demo windows use content, too, so tell them to load what they need:
         modelAndControls.LoadContent();
         modelViewerWindow.LoadContent();
     }

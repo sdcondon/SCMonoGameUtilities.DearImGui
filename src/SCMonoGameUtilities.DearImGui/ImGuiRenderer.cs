@@ -7,21 +7,7 @@ using System.Runtime.InteropServices;
 namespace SCMonoGameUtilities.DearImGui;
 
 /// <summary>
-/// <para>
 /// Renderer for Dear ImGui.
-/// </para>
-/// <para>
-/// NB: In the public methods, note the separation of BeginUpdate/EndUpdate and Draw. While 
-/// we *could* of course do everything in Draw (and given the immediate nature of ImGui, the
-/// temptation to do so is understandable), this is not a good idea. MonoGame doesn't necessarily
-/// do a Draw for every update step (see its game loop documentation), and the last thing we want
-/// if the game is struggling to keep up is for our GUI to become even less responsive because
-/// button clicks etc aren't coinciding with a Draw call. Plus of course in general it's a good
-/// idea to respect the conventions of the framework you are using - which in MonoGame's case means
-/// separating logic that updates state (which in ImGui's case happens alongside - and strictly speaking
-/// includes - submitting GUI elements), and logic that sends to the graphics pipeline (which in ImGui's
-/// case doesn't happen until you retrieve the draw data and deal with it appropriately).
-/// </para>
 /// </summary>
 public sealed class ImGuiRenderer : IDisposable
 {
@@ -259,6 +245,7 @@ public sealed class ImGuiRenderer : IDisposable
     {
         // TODO: do we need any kind of synchronisation here? when/how might this event be raised?
         // We *could* (if needed) store it in a (thread-safe) queue for consumption during the next BeginUpdate()?
+        // Almost certainly fine as-is..
         if (eventArgs.Character == '\t') return;
         ImGui.SetCurrentContext(_imGuiContext);
         _imGuiIO.AddInputCharacter(eventArgs.Character);
