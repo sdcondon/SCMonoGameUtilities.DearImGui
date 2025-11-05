@@ -6,7 +6,7 @@ which don't feature in the ImGuiNET demo project.
 
 Changes from MonoGame demo proj in ImGuiNET:
 
-* Significant changes made to the renderer from that project (which leaves a lot to be desired). Most notably:
+* Significant changes made to the renderer from that project, which leaves a lot to be desired. Most notably:
   * While I understand the temptation given ImGui's immediate nature, don't do everything in Draw(). MonoGame
     doesn't necessarily do a Draw for every update step (see its game loop documentation), and the last thing
     we want if the game is struggling to keep up is for our GUI to become even less responsive because button
@@ -17,6 +17,6 @@ Changes from MonoGame demo proj in ImGuiNET:
     draw data and deal with it appropriately).
   * Key up/down event code rewritten, because enumerating a fairly large enumeration in each update is slightly 
     insane, when instead we can just use MonoGames keyboard state stuff - which does bitwise operations to look
-    for pressed keys.#
+    for pressed keys.
 * Demos expanded significantly (the vast majority of the native ones are here now, plus one or two others), and
   most re-written for better encapsulation of the individual demos.
