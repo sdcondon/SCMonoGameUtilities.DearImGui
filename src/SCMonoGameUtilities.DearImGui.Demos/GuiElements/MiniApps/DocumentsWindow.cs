@@ -11,11 +11,6 @@ class DocumentsWindow(ExampleDocumentStore documentStore, bool isOpen = false)
 {
     public bool IsOpen = isOpen;
 
-    private const ImGuiTabBarFlags tabBarFlags = ImGuiTabBarFlags.Reorderable
-        | ImGuiTabBarFlags.FittingPolicyDefault
-        | ImGuiTabBarFlags.DrawSelectedOverline
-        | ImGuiTabBarFlags.AutoSelectNewTabs;
-
     private readonly ExampleDocumentStore documentStore = documentStore;
     private readonly List<Tab> tabs = [];
 
@@ -109,6 +104,10 @@ class DocumentsWindow(ExampleDocumentStore documentStore, bool isOpen = false)
         if (tabs.Count == 0) return;
 
         // Update the bar itself
+        const ImGuiTabBarFlags tabBarFlags = ImGuiTabBarFlags.Reorderable
+            | ImGuiTabBarFlags.FittingPolicyDefault
+            | ImGuiTabBarFlags.DrawSelectedOverline
+            | ImGuiTabBarFlags.AutoSelectNewTabs;
         if (BeginTabBar("##tabs", tabBarFlags))
         {
             foreach (var tab in tabs)
