@@ -1,6 +1,8 @@
 # SCMonoGameUtilities.DearImGui
 
 Just my adaptation of the MonoGame ImGui renderer and examples found in the [ImGuiNET](https://github.com/ImGuiNET/ImGui.NET) monogame demo project.
+Mostly for personal use, but making it public because others might find some value here - especially in the demos, many of which don't feature in the
+ImGuiNET demo project.
 
 Significant changes made to the renderer from that project (which leaves a lot to be desired). Most notably:
 
@@ -16,5 +18,5 @@ Significant changes made to the renderer from that project (which leaves a lot t
   insane, when instead we can just use MonoGames keyboard state stuff - which does bitwise operations to look
   for pressed keys.
 
-Demos expanded significantly (the vast majority of the native ones are here now, pluus one or two others), and
+Demos expanded significantly (the vast majority of the native ones are here now, plus one or two others), and
 most re-written for better encapsulation of the individual demos.
