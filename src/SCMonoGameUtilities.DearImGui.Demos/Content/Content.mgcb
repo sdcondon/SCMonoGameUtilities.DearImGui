@@ -16,7 +16,7 @@
 #begin Fonts/Roboto-Regular.ttf
 /copy:Fonts/Roboto-Regular.ttf
 
-#begin suzanne.fbx
+#begin Models/suzanne.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -33,5 +33,5 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:suzanne.fbx
+/build:Models/suzanne.fbx
 

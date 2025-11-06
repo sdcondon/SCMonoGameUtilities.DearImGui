@@ -6,6 +6,7 @@
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Content\obj\**;Content\bin\**</DefaultItemExcludes>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Content\Fonts\Roboto-Regular.ttf" />

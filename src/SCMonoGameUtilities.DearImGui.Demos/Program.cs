@@ -69,8 +69,8 @@ public class Program : Game
         // other windows, but we do want it to include menu items for opening and closing them. So, we provide it with
         // menu item objects that include what is essentially a callback to handle being selected and unselected.
         displaySettingsWindow = new(Window, graphicsDeviceManager);
-        modelAndControls = new(GraphicsDevice, Content, "suzanne");
-        modelViewerWindow = new(guiRenderer, GraphicsDevice, Content, "suzanne");
+        modelAndControls = new(GraphicsDevice, Content, "Models/suzanne");
+        modelViewerWindow = new(guiRenderer, GraphicsDevice, Content, "Models/suzanne");
         demoWindow = new(this)
         {
             ExamplesMenuSections =
