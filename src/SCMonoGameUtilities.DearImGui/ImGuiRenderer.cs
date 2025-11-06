@@ -41,10 +41,6 @@ public sealed class ImGuiRenderer : IDisposable
     private nint _nextTextureId;
 
     // Input
-    // NB: Instead of just a single "_last..State" field for mouse and keyboard, we maintain a couple, as
-    // well as a boolean that indicates which is the current (and which is therefore the last). This ultimately
-    // lets us minimise the number of times we make a direct assignment (i.e. a copy) of these rather large
-    // structs. Specifically, precisely once (assigning the result of GetState()) for each update step.
     private KeyboardState _keyboardStateA;
     private KeyboardState _keyboardStateB;
     private bool _keyboardStateAIsCurrent;
@@ -267,8 +263,11 @@ public sealed class ImGuiRenderer : IDisposable
         _imGuiIO.DisplaySize = new(_graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight);
         _imGuiIO.DisplayFramebufferScale = new(1f, 1f);
 
-        // As mentioned in the fields above, all the ref stuff here is ultimately so that we only directly assign
-        // keyboard and mouse state ONCE per update step (when assigning return value of GetState) - these are pretty beefy as structs go.
+        // NB PERFORMANCE: Keyboard state, and to a lesser extent mouse state, are rather large structs. Instead of the obvious approach of using a
+        // "_last..State" field and "current..State" local var for mouse and keyboard, we maintain a couple of fields for each, as well as a boolean
+        // that indicates which is the current (and which is therefore the last). This ultimately lets us assign (i.e. copy a large struct) state precisely
+        // once (assigning the result of GetState()) rather than twice for each update step, by using the ref vars approach here. Having tested it, its a
+        // minor time saving, but a consistent one, and for code invoked as often as this will be, every little helps.
         ref var currentMouseState = ref (_mouseStateAIsCurrent ? ref _mouseStateA : ref _mouseStateB);
         ref var lastMouseState = ref (_mouseStateAIsCurrent ? ref _mouseStateB : ref _mouseStateA);
         currentMouseState = Mouse.GetState();
