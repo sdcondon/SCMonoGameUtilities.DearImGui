@@ -9,7 +9,7 @@ namespace SCMonoGameUtilities.DearImGui;
 /// <summary>
 /// Renderer for Dear ImGui.
 /// </summary>
-public sealed class ImGuiRenderer : IDisposable
+public sealed class ImGuiRenderer_WithIOStateIndirection : IDisposable
 {
     private const float MOUSE_WHEEL_DELTA = 120;
 
@@ -41,14 +41,18 @@ public sealed class ImGuiRenderer : IDisposable
     private nint _nextTextureId;
 
     // Input
-    private KeyboardState _lastKeyboardState;
-    private MouseState _lastMouseState;
+    private KeyboardState _keyboardStateA;
+    private KeyboardState _keyboardStateB;
+    private bool _keyboardStateAIsCurrent;
+    private MouseState _mouseStateA;
+    private MouseState _mouseStateB;
+    private bool _mouseStateAIsCurrent;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="ImGuiRenderer"/> class.
     /// </summary>
     /// <param name="game">The <see cref="Game"/> the this renderer is used by.</param>
-    public ImGuiRenderer(Game game)
+    public ImGuiRenderer_WithIOStateIndirection(Game game)
     {
         // Setup context
         _game = game ?? throw new ArgumentNullException(nameof(game));
@@ -92,7 +96,7 @@ public sealed class ImGuiRenderer : IDisposable
         _game.Window.TextInput += HandleWindowTextInput;
     }
 
-    ~ImGuiRenderer()
+    ~ImGuiRenderer_WithIOStateIndirection()
     {
         ImGui.DestroyContext(_imGuiContext);
     }
@@ -259,33 +263,42 @@ public sealed class ImGuiRenderer : IDisposable
         _imGuiIO.DisplaySize = new(_graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight);
         _imGuiIO.DisplayFramebufferScale = new(1f, 1f);
 
-        var mouseState = Mouse.GetState();
-        AddMousePosEvent();
-        AddMouseWheelEvent();
-        AddMouseButtonEvent(0, _lastMouseState.LeftButton, mouseState.LeftButton);
-        AddMouseButtonEvent(1, _lastMouseState.RightButton, mouseState.RightButton);
-        AddMouseButtonEvent(2, _lastMouseState.MiddleButton, mouseState.MiddleButton);
-        AddMouseButtonEvent(3, _lastMouseState.XButton1, mouseState.XButton1);
-        AddMouseButtonEvent(4, _lastMouseState.XButton2, mouseState.XButton2);
-        _lastMouseState = mouseState;
+        // NB PERFORMANCE: Keyboard state, and to a lesser extent mouse state, are rather large structs. Instead of the obvious approach of using a
+        // "_last..State" field and "current..State" local var for mouse and keyboard, here we maintain a couple of fields for each, as well as a boolean
+        // that indicates which is the current (and which is therefore the last). This ultimately lets us assign (i.e. copy a large struct) state precisely
+        // once (assigning the result of GetState()) rather than twice for each update step, by using the ref vars approach here.
+        // Of course, having tested it, its actually slower - presumably all of the indirected access outweighs the cost of the copy.
+        ref var currentMouseState = ref (_mouseStateAIsCurrent ? ref _mouseStateA : ref _mouseStateB);
+        ref var lastMouseState = ref (_mouseStateAIsCurrent ? ref _mouseStateB : ref _mouseStateA);
+        currentMouseState = Mouse.GetState();
+        AddMousePosEvent(ref currentMouseState, ref lastMouseState);
+        AddMouseWheelEvent(ref currentMouseState, ref lastMouseState);
+        AddMouseButtonEvent(0, lastMouseState.LeftButton, currentMouseState.LeftButton);
+        AddMouseButtonEvent(1, lastMouseState.RightButton, currentMouseState.RightButton);
+        AddMouseButtonEvent(2, lastMouseState.MiddleButton, currentMouseState.MiddleButton);
+        AddMouseButtonEvent(3, lastMouseState.XButton1, currentMouseState.XButton1);
+        AddMouseButtonEvent(4, lastMouseState.XButton2, currentMouseState.XButton2);
+        _mouseStateAIsCurrent = !_mouseStateAIsCurrent;
 
-        var keyboardState = Keyboard.GetState();
-        AddKeyEvents(_lastKeyboardState, keyboardState, false);
-        AddKeyEvents(keyboardState, _lastKeyboardState, true);
-        _lastKeyboardState = keyboardState;
+        ref var currentKeyboardState = ref (_keyboardStateAIsCurrent ? ref _keyboardStateA : ref _keyboardStateB);
+        ref var lastKeyboardState = ref (_keyboardStateAIsCurrent ? ref _keyboardStateB : ref _keyboardStateA);
+        currentKeyboardState = Keyboard.GetState();
+        AddKeyEvents(ref lastKeyboardState, ref currentKeyboardState, false);
+        AddKeyEvents(ref currentKeyboardState, ref lastKeyboardState, true);
+        _keyboardStateAIsCurrent = !_keyboardStateAIsCurrent;
 
-        void AddMousePosEvent()
+        void AddMousePosEvent(ref MouseState mouseState, ref MouseState lastMouseState)
         {
-            if (mouseState.X != _lastMouseState.X || mouseState.Y != _lastMouseState.Y)
+            if (mouseState.X != lastMouseState.X || mouseState.Y != lastMouseState.Y)
             {
                 _imGuiIO.AddMousePosEvent(mouseState.X, mouseState.Y);
             }
         }
 
-        void AddMouseWheelEvent()
+        void AddMouseWheelEvent(ref MouseState mouseState, ref MouseState lastMouseState)
         {
-            var scrollDelta = mouseState.ScrollWheelValue - _lastMouseState.ScrollWheelValue;
-            var horizontalScrollDelta = mouseState.HorizontalScrollWheelValue - _lastMouseState.HorizontalScrollWheelValue;
+            var scrollDelta = mouseState.ScrollWheelValue - lastMouseState.ScrollWheelValue;
+            var horizontalScrollDelta = mouseState.HorizontalScrollWheelValue - lastMouseState.HorizontalScrollWheelValue;
 
             if (scrollDelta != 0 || horizontalScrollDelta != 0)
             {
@@ -301,7 +314,7 @@ public sealed class ImGuiRenderer : IDisposable
             }
         }
 
-        void AddKeyEvents(KeyboardState fromState, KeyboardState toState, bool isBackwards)
+        void AddKeyEvents(ref KeyboardState fromState, ref KeyboardState toState, bool isBackwards)
         {
             foreach (var toPressedKey in toState.GetPressedKeys())
             {
