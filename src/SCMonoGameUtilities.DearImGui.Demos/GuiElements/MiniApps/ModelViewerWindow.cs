@@ -18,6 +18,7 @@ class ModelViewerWindow(
 
     private Model model;
     private Matrix modelWorldTransform = Matrix.CreateRotationX(-1.5f);
+    private float modelAspectRatio;
     private RenderTarget2D modelRenderTarget;
     private nint modelTextureId;
 
@@ -31,7 +32,6 @@ class ModelViewerWindow(
                 effect.TextureEnabled = false;
                 effect.EnableDefaultLighting();
                 effect.View = Matrix.CreateLookAt(new(0, 0, 4), Vector3.Zero, Vector3.UnitY);
-                effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), graphicsDevice.Viewport.AspectRatio, 0.1f, 100.0f);
             }
         }
 
@@ -58,35 +58,24 @@ class ModelViewerWindow(
 
         if (Begin("Example: Model Viewer", ref IsVisible))
         {
-            Image(modelTextureId, new(GetContentRegionAvail().X, GetContentRegionAvail().X / graphicsDevice.Viewport.AspectRatio));
+            System.Numerics.Vector2 imageSize = GetContentRegionAvail();
+            if (imageSize.X > 0 && imageSize.Y > 0)
+            {
+                modelAspectRatio = imageSize.X / imageSize.Y;
 
-            PushItemFlag(ImGuiItemFlags.ButtonRepeat, true);
+                var cursorPos = GetCursorPos();
 
-            Indent();
-            if (ArrowButton("up", ImGuiDir.Up))
-            {
-                modelWorldTransform *= Matrix.CreateRotationX(-0.1f);
-            }
-            Unindent();
-            if (ArrowButton("left", ImGuiDir.Left))
-            {
-                modelWorldTransform *= Matrix.CreateRotationY(-0.1f);
-            }
-            SameLine();
-            Text(" ");
-            SameLine();
-            if (ArrowButton("right", ImGuiDir.Right))
-            {
-                modelWorldTransform *= Matrix.CreateRotationY(0.1f);
-            }
+                InvisibleButton("model", imageSize, ImGuiButtonFlags.MouseButtonLeft);
+                if (IsItemActive() && IsMouseDragging(ImGuiMouseButton.Left))
+                {
+                    var io = GetIO();
+                    modelWorldTransform *= Matrix.CreateRotationY(0.01f * io.MouseDelta.X);
+                    modelWorldTransform *= Matrix.CreateRotationX(0.01f * io.MouseDelta.Y);
+                }
 
-            Indent();
-            if (ArrowButton("down", ImGuiDir.Down))
-            {
-                modelWorldTransform *= Matrix.CreateRotationX(0.1f);
+                SetCursorPos(cursorPos);
+                Image(modelTextureId, imageSize);
             }
-            Unindent();
-            PopItemFlag();
         }
 
         End();
@@ -106,6 +95,7 @@ class ModelViewerWindow(
             foreach (BasicEffect effect in mesh.Effects)
             {
                 effect.World = modelWorldTransform;
+                effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), modelAspectRatio, 0.1f, 100.0f);
             }
 
             mesh.Draw();

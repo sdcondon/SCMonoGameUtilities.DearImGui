@@ -115,11 +115,11 @@ class PropertyEditorWindow(bool isOpen = false)
 
                 if (visibleNode.Data != null)
                 {
-                    // NB: Here we do a dictionary lookup of the appropriate editor instance every frame.
+                    // NB: Here we do a dictionary lookup of the appropriate set of property editors in every frame.
                     // Should be fine, but if we wanted to avoid even that and are okay with our tree structure
-                    // growing a bit, we *could* (also) store the appropriate editor instance against the tree node
-                    // and check that first, so that for any given node, its a direct reference every time after the
-                    // first (though of course would then need logic to reset this if stored data type can be changed
+                    // growing a bit, we *could* (also) store the editor array against the tree node and check that
+                    // first, so that for any given node, it is a direct reference every time after the first
+                    // (though of course would then need logic to reset this if stored data type can be changed
                     // - but that's easy enough).
                     var dataType = visibleNode.Data.GetType();
                     if (!propertyEditorsByDataType.TryGetValue(dataType, out var propertyEditors))
