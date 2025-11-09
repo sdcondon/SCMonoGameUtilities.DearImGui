@@ -14,8 +14,9 @@ class PropertyEditorWindow(bool isOpen = false)
 {
     public bool IsOpen = isOpen;
 
-    private readonly ExampleTreeNode root_node = ExampleTreeNode.MakeRandomTree();
+    private readonly ExampleTreeNode rootNode = ExampleTreeNode.MakeRandomTree();
     private readonly unsafe ImGuiTextFilterPtr filter = new(ImGuiNative.ImGuiTextFilter_ImGuiTextFilter(null));
+
     // We do some reflection in this window, to determine what input controls to use for a given type.
     // It would of course be needlessly slow to reflect in each and every frame. So we just do it the first
     // time we encounter an object of a particular type, and store our findings in a dictionary of sets of
@@ -54,7 +55,7 @@ class PropertyEditorWindow(bool isOpen = false)
             // currently using a table to benefit from RowBg feature
             if (BeginTable("##bg", 1, ImGuiTableFlags.RowBg))
             {
-                foreach (var childNode in root_node.Children)
+                foreach (var childNode in rootNode.Children)
                     if (filter.PassFilter(childNode.Name)) // Filter root node
                         UpdateTreeNode(childNode);
                 EndTable();
@@ -114,6 +115,12 @@ class PropertyEditorWindow(bool isOpen = false)
 
                 if (visibleNode.Data != null)
                 {
+                    // NB: Here we do a dictionary lookup of the appropriate editor instance every frame.
+                    // Should be fine, but if we wanted to avoid even that and are okay with our tree structure
+                    // growing a bit, we *could* (also) store the appropriate editor instance against the tree node
+                    // and check that first, so that for any given node, its a direct reference every time after the
+                    // first (though of course would then need logic to reset this if stored data type can be changed
+                    // - but that's easy enough).
                     var dataType = visibleNode.Data.GetType();
                     if (!propertyEditorsByDataType.TryGetValue(dataType, out var propertyEditors))
                     {
@@ -184,6 +191,7 @@ class PropertyEditorWindow(bool isOpen = false)
                 else
                 {
                     // We could of course just omit unsupported property types entirely, instead.
+                    // Or, well, do whatever we want with them..
                     editorType = typeof(UnsupportedPropertyEditor);
                 }
 
@@ -196,7 +204,7 @@ class PropertyEditorWindow(bool isOpen = false)
         public abstract void Update(object data);
     }
 
-    // Derivation of PropertyEditor with generic type parameters for a specific data type and type of property.
+    // Abstract derivation of PropertyEditor with generic type parameters for a specific data type and type of property.
     // These type parameters ultimately mean that it can get and set a specific property of the specific data type in an efficient manner.
     private abstract class PropertyEditor<TData, TProperty>(PropertyInfo property) : PropertyEditor(property.Name)
     {
@@ -220,12 +228,6 @@ class PropertyEditorWindow(bool isOpen = false)
         protected abstract bool Control(ref TProperty propertyValue);
     }
 
-    // Concrete type for editing boolean-valued properties.
-    private class BoolPropertyEditor<TData>(PropertyInfo property) : PropertyEditor<TData, bool>(property)
-    {
-        protected override bool Control(ref bool value) => Checkbox("##Editor", ref value);
-    }
-
     // Concrete type for editing string-valued properties.
     // NB: in the constructor, we *could* examine the PropertyInfo for e.g. System.ComponentModel.DataAnnotations
     // attributes attached to the property, and use what we find to tweak the details of the control (e.g. set max
@@ -235,10 +237,10 @@ class PropertyEditorWindow(bool isOpen = false)
     {
         protected override bool Control(ref string value)
         {
-            // nb will populate the prop if its null. a bit more logic would be needed to make sure that
-            // we don't unless something is explicitly typed in, while also making sure the control doesn't complain.
-            // if on the other hand we want to make sure we explicitly distinguish between null and empty, could add a checkbox.
-            // neither is too difficult - consider this an exercise for the reader..
+            // NB: will populate the prop if its null. a bit more logic would be needed to make sure that
+            // we don't unless something is explicitly typed in, while also making sure that InputText doesn't throw.
+            // If on the other hand we want to make sure we explicitly distinguish between null and empty, could add a checkbox.
+            // Neither is particularly difficult - consider this an exercise for the reader.
             value ??= string.Empty;
             return InputText("##Editor", ref value, 28);
         }
@@ -271,6 +273,11 @@ class PropertyEditorWindow(bool isOpen = false)
             SetNextItemWidth(-float.Epsilon);
             return SliderFloat2("##Editor", ref value, v_min, v_max);
         }
+    }
+
+    private class BoolPropertyEditor<TData>(PropertyInfo property) : PropertyEditor<TData, bool>(property)
+    {
+        protected override bool Control(ref bool value) => Checkbox("##Editor", ref value);
     }
 
     private class UnsupportedPropertyEditor(PropertyInfo property) : PropertyEditor(property.Name)

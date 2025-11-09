@@ -124,8 +124,18 @@ class LogWindow(int maxEntries, bool isOpen = false)
         EndChild();
     }
 
-    // A basic circular buffer type to store our log window content -
-    // on the assumption that we don't want it to just grow forever.
+    /// <summary>
+    /// <para>
+    /// A basic circular buffer type used for storing the log window's content -
+    /// on the assumption that we don't want it to just grow forever.
+    /// </para>
+    /// <para>
+    /// NB: Of course, in a real app this wouldn't necessarily be an inner type like this.
+    /// Just wanted to keep all the examples as self-contained as possible.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">The type of elements to be stored.</typeparam>
+    /// <param name="maxSize">The maximum number of elements that the buffer will store. The oldest elements will be dropped once this is size is reached.</param>
     private class RingBuffer<T>(int maxSize) : IEnumerable<T>
     {
         // We *could* use something that automatically resizes itself (e.g. a List<>), so that we require
@@ -152,8 +162,7 @@ class LogWindow(int maxEntries, bool isOpen = false)
 
         public void Clear()
         {
-            // NB: actually clear the array to avoid leaks when T is a reference type:
-            Array.Clear(content);
+            Array.Clear(content); // NB: actually clear the array to avoid leaks when T is a reference type
             headIndex = 0;
             count = 0;
         }

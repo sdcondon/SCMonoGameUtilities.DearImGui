@@ -6,7 +6,7 @@ using static ImGuiNET.ImGui;
 
 namespace SCMonoGameUtilities.DearImGui.Demos.GuiElements.MiniApps;
 
-// Demos a combination of non-GUI and GUI elements that interact
+// Demonstrates a combination of non-GUI and GUI elements that interact
 class ModelAndControls(GraphicsDevice graphicsDevice, ContentManager contentManager, string modelAssetName, bool isVisible = false)
 {
     public bool IsVisible = isVisible;
