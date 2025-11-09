@@ -164,8 +164,8 @@ class AssetsBrowserWindow(bool isOpen = false)
             ImGuiMultiSelectIOPtr ms_io = BeginMultiSelect(ms_flags, selection.Size, items.Count);
 
             // Use custom selection adapter: store ID in selection (recommended)
-            SelectionAdapter customSelectionAdapter = (_, idx) => items[idx].Id;
-            selection.AdapterIndexToStorageId = Marshal.GetFunctionPointerForDelegate(customSelectionAdapter);
+            uint customSelectionAdapter(ImGuiSelectionBasicStoragePtr _, int idx) => items[idx].Id;
+            selection.AdapterIndexToStorageId = Marshal.GetFunctionPointerForDelegate((SelectionAdapter)customSelectionAdapter);
             selection.ApplyRequests(ms_io);
 
             bool want_delete = (Shortcut(ImGuiKey.Delete, ImGuiInputFlags.Repeat) && (selection.Size > 0)) || requestDelete;
@@ -243,7 +243,7 @@ class AssetsBrowserWindow(bool isOpen = false)
                                         while (selection.GetNextSelectedItem(ref it, out id))
                                             payload_items.Add(id);
                                     var payload_items_array = payload_items.ToArray();
-                                    SetDragDropPayload("ASSETS_BROWSER_ITEMS", new nint(&payload_items_array), (uint)(sizeof(uint) * payload_items.Count));
+                                    //// todo: SetDragDropPayload("ASSETS_BROWSER_ITEMS", new nint(&payload_items_array), (uint)(sizeof(uint) * payload_items.Count));
                                 }
                             }
 

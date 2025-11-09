@@ -14,7 +14,6 @@ public class ImGuiRendererBenchmarks
     static readonly ProductionGame productionGame = new();
 
     [Benchmark]
-
     public void FromImGuiNET() => fromImGuiNetGame.RunOneFrame();
 
     [Benchmark]
