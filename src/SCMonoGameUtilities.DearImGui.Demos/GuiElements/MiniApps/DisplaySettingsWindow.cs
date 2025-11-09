@@ -43,14 +43,16 @@ class DisplaySettingsWindow
             return;
         }
 
-        var changed = false;
-        if (Combo("Window Size", ref displayModeIndex, displayModeDescriptions, displayModeDescriptions.Length)) changed = true;
-        if (Checkbox("Fullscreen", ref isFullScreen)) changed = true;
-        if (changed)
+        if (Combo("Window Size", ref displayModeIndex, displayModeDescriptions, displayModeDescriptions.Length) && displayModeIndex > -1)
         {
             graphicsDeviceManager.PreferredBackBufferWidth = displayModes[displayModeIndex].Width;
             graphicsDeviceManager.PreferredBackBufferHeight = displayModes[displayModeIndex].Height;
             graphicsDeviceManager.PreferredBackBufferFormat = displayModes[displayModeIndex].Format;
+            graphicsDeviceManager.ApplyChanges();
+        }
+
+        if (Checkbox("Fullscreen", ref isFullScreen))
+        {
             graphicsDeviceManager.IsFullScreen = isFullScreen;
             graphicsDeviceManager.ApplyChanges();
         }
