@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿#pragma warning disable // Warnings disabled - external code for performance comparison purposes only
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Runtime.InteropServices;
 using ImGuiNET;
 
-namespace SCMonoGameUtilities.DearImGui;
+namespace SCMonoGameUtilities.DearImGui.Benchmarks.Alts;
 
 /// <summary>
 /// ImGui renderer for use with XNA-likes (FNA & MonoGame)
@@ -457,3 +458,4 @@ public static class DrawVertDeclaration
         );
     }
 }
+#pragma warning restore

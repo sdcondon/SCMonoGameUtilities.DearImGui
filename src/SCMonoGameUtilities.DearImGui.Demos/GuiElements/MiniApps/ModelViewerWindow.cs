@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 using static ImGuiNET.ImGui;
 
 namespace SCMonoGameUtilities.DearImGui.Demos.GuiElements.MiniApps;
@@ -27,7 +28,7 @@ class ModelViewerWindow(
         model = contentManager.Load<Model>(modelAssetName);
         foreach (ModelMesh mesh in model.Meshes)
         {
-            foreach (BasicEffect effect in mesh.Effects)
+            foreach (BasicEffect effect in mesh.Effects.Cast<BasicEffect>())
             {
                 effect.TextureEnabled = false;
                 effect.EnableDefaultLighting();
@@ -92,7 +93,7 @@ class ModelViewerWindow(
 
         foreach (ModelMesh mesh in model.Meshes)
         {
-            foreach (BasicEffect effect in mesh.Effects)
+            foreach (BasicEffect effect in mesh.Effects.Cast<BasicEffect>())
             {
                 effect.World = modelWorldTransform;
                 effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), modelAspectRatio, 0.1f, 100.0f);

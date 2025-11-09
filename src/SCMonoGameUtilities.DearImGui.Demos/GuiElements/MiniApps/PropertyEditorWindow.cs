@@ -301,7 +301,7 @@ class ExampleTreeNode(int id, string name, object data)
 
     public static ExampleTreeNode MakeRandomTree()
     {
-        string[] l1NodeNames = { "Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pear", "Pineapple", "Strawberry", "Watermelon" };
+        string[] l1NodeNames = ["Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pear", "Pineapple", "Strawberry", "Watermelon"];
         const int root_items_multiplier = 2;
         int uid = 0;
 

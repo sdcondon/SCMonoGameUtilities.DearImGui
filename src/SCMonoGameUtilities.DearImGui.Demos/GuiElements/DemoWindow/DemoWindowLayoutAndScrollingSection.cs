@@ -55,7 +55,7 @@ class DemoWindowLayoutAndScrollingSection
 
         // Capture the group size and create widgets using the same size
         Vec2 size = GetItemRectSize();
-        float[] values = { 0.5f, 0.20f, 0.80f, 0.60f, 0.25f };
+        float[] values = [0.5f, 0.20f, 0.80f, 0.60f, 0.25f];
         PlotHistogram("##values", ref values[0], values.Length, 0, null, 0.0f, 1.0f, size);
 
         Button("ACTION", new Vec2((size.X - GetStyle().ItemSpacing.X) * 0.5f, size.Y));
@@ -250,7 +250,7 @@ class DemoWindowLayoutAndScrollingSection
             DragInt("Offset X", ref offset_x, 1.0f, -1000, 1000);
 
             SetCursorPosX(GetCursorPosX() + offset_x);
-            Vec4 colv4 = new Vec4(255.0f, 0.0f, 0.0f, 100.0f);
+            Vec4 colv4 = new(255.0f, 0.0f, 0.0f, 100.0f);
             PushStyleColor(ImGuiCol.ChildBg, ColorConvertFloat4ToU32(colv4));
             BeginChild("Red", new Vec2(200, 100), ImGuiChildFlags.Borders, ImGuiWindowFlags.None);
             for (int n = 0; n < 50; n++)
@@ -341,9 +341,9 @@ class DemoWindowLayoutAndScrollingSection
         float bf0 = 1.0f;
         float bf1 = 2.0f;
         float bf2 = 3.0f;
-        string[] items = { "AAAA", "BBBB", "CCCC", "DDDD" };
+        readonly string[] items = ["AAAA", "BBBB", "CCCC", "DDDD"];
         int item = -1;
-        int[] bselection = { 0, 1, 2, 3 };
+        readonly int[] bselection = [0, 1, 2, 3];
 
         public void Update()
         {
@@ -405,7 +405,7 @@ class DemoWindowLayoutAndScrollingSection
             PopItemWidth();
 
             // Dummy
-            Vec2 button_sz = new Vec2(40, 40);
+            Vec2 button_sz = new(40, 40);
             Button("A", button_sz); SameLine();
             Dummy(button_sz); SameLine();
             Button("B", button_sz);
@@ -476,7 +476,7 @@ class DemoWindowLayoutAndScrollingSection
             {
                 if (i > 0) { SameLine(); }
                 BeginGroup();
-                string[] names = { "Top", "25%", "Center", "75%", "Bottom" };
+                string[] names = ["Top", "25%", "Center", "75%", "Bottom"];
                 TextUnformatted(names[i]);
 
                 ImGuiWindowFlags child_flags = enable_extra_decorations ? ImGuiWindowFlags.MenuBar : 0;
@@ -530,7 +530,7 @@ class DemoWindowLayoutAndScrollingSection
             {
                 float child_height = GetTextLineHeight() + 30.0f;
                 ImGuiWindowFlags child_flags = ImGuiWindowFlags.HorizontalScrollbar | (enable_extra_decorations ? ImGuiWindowFlags.AlwaysVerticalScrollbar : 0);
-                string[] names = { "Left", "25%", "Center", "75%", "Right" };
+                string[] names = ["Left", "25%", "Center", "75%", "Right"];
                 string child_id = names[i];
                 bool child_is_visible = BeginChild(child_id, new Vec2(-100, child_height), ImGuiChildFlags.Borders, child_flags);
                 if (scroll_to_off)

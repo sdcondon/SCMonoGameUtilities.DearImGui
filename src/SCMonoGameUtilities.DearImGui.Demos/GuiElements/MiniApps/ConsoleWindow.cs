@@ -1,11 +1,15 @@
 ﻿using ImGuiNET;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using static ImGuiNET.ImGui;
 
 namespace SCMonoGameUtilities.DearImGui.Demos.GuiElements.MiniApps;
 
+// This example implements a console with basic coloring
+// A more elaborate implementation may want to store entries along with extra data such as timestamp and emitter,
+// and or offer auto-completion (e.g. with tab) and history (e.g. with up/down keys)
+//
 // TODO: separation of concerns - separate the console from the window itself. Create ExampleConsole type and inject.
 // TODO: max entries and ring buffer, like log window.
 class ConsoleWindow(bool isOpen = false)
@@ -34,14 +38,6 @@ class ConsoleWindow(bool isOpen = false)
         if (Begin("Example: Console", ref IsOpen))
         {
             UpdateContextMenu();
-
-            TextWrapped(
-                "This example implements a console with basic coloring" //, completion "+//(TAB key) and history (Up/Down keys)
-                + ". A more elaborate implementation may want to store entries along with extra data such as timestamp, emitter, etc.");
-            TextWrapped("Enter 'HELP' for help.");
-
-            Separator();
-
             UpdateTopBar(out var copyToClipboard);
             UpdateDebugBar();
 
@@ -136,60 +132,30 @@ class ConsoleWindow(bool isOpen = false)
         }
 
         PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(4, 1));
-        if (filter.IsActive())
+        var toDisplay = filter.IsActive() ? log.Where(a => filter.PassFilter(a)) : log;
+        foreach (string str in toDisplay)
         {
-            foreach (string str in log)
+            Vector4 color;
+            bool has_color = false;
+            if (str.Contains("[error]", System.StringComparison.CurrentCulture))
             {
-                if (filter.PassFilter(str))
-                {
-                    Vector4 color;
-                    bool has_color = false;
-                    if (str.IndexOf("[error]") != -1)
-                    {
-                        color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
-                        PushStyleColor(ImGuiCol.Text, color);
-                        has_color = true;
-                    }
-                    if (str.IndexOf("# ") == 0)
-                    {
-                        color = new Vector4(1.0f, 0.8f, 0.6f, 1.0f);
-                        PushStyleColor(ImGuiCol.Text, color);
-                        has_color = true;
-                    }
-                    TextUnformatted(str);
-                    if (has_color)
-                    {
-                        PopStyleColor();
-                    }
-                }
+                color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
+                PushStyleColor(ImGuiCol.Text, color);
+                has_color = true;
+            }
+            if (str.StartsWith("# "))
+            {
+                color = new Vector4(1.0f, 0.8f, 0.6f, 1.0f);
+                PushStyleColor(ImGuiCol.Text, color);
+                has_color = true;
+            }
+            TextUnformatted(str);
+            if (has_color)
+            {
+                PopStyleColor();
+            }
+        }
 
-            }
-        }
-        else
-        {
-            foreach (string str in log)
-            {
-                Vector4 color;
-                bool has_color = false;
-                if (str.IndexOf("[error]") != -1)
-                {
-                    color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
-                    PushStyleColor(ImGuiCol.Text, color);
-                    has_color = true;
-                }
-                if (str.IndexOf("# ") == 0)
-                {
-                    color = new Vector4(1.0f, 0.8f, 0.6f, 1.0f);
-                    PushStyleColor(ImGuiCol.Text, color);
-                    has_color = true;
-                }
-                TextUnformatted(str);
-                if (has_color)
-                {
-                    PopStyleColor();
-                }
-            }
-        }
         PopStyleVar();
 
         if (autoScroll && GetScrollY() >= GetScrollMaxY())
@@ -204,6 +170,7 @@ class ConsoleWindow(bool isOpen = false)
     {
         string input_buf = "";
         bool reclaim_focus = false;
+
         PushItemWidth(-float.Epsilon);
         if (InputText("##Input", ref input_buf, 250, ImGuiInputTextFlags.EnterReturnsTrue /*| ImGuiInputTextFlags.CallbackCompletion | ImGuiInputTextFlags.CallbackHistory*/))
         {
@@ -254,7 +221,7 @@ class ConsoleWindow(bool isOpen = false)
         }
         else
         {
-            AppendContent("Unknown command: '" + command + "'");
+            AppendContent("Unknown command: '" + command + "'. Enter 'HELP' for assistance.");
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 using static ImGuiNET.ImGui;
 
 namespace SCMonoGameUtilities.DearImGui.Demos.GuiElements.MiniApps;
@@ -19,7 +20,7 @@ class ModelAndControls(GraphicsDevice graphicsDevice, ContentManager contentMana
         model = contentManager.Load<Model>(modelAssetName);
         foreach (ModelMesh mesh in model.Meshes)
         {
-            foreach (BasicEffect effect in mesh.Effects)
+            foreach (BasicEffect effect in mesh.Effects.Cast<BasicEffect>())
             {
                 effect.TextureEnabled = false;
                 effect.EnableDefaultLighting();
@@ -94,7 +95,7 @@ class ModelAndControls(GraphicsDevice graphicsDevice, ContentManager contentMana
 
         foreach (ModelMesh mesh in model.Meshes)
         {
-            foreach (BasicEffect effect in mesh.Effects)
+            foreach (BasicEffect effect in mesh.Effects.Cast<BasicEffect>())
             {
                 effect.World = modelWorldTransform;
             }

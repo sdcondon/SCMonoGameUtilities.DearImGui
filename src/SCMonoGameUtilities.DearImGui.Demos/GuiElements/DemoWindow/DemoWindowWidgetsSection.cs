@@ -80,15 +80,15 @@ class DemoWindowWidgetsSection()
         float f0 = 0.001f;
         double d0 = 999999.00000001;
         float f1 = 1.42f;
-        Vec3 vec3 = new Vec3(0.10f, 0.20f, 0.30f);
+        Vec3 vec3 = new(0.10f, 0.20f, 0.30f);
 
         int i1 = 50, i2 = 42;
         float f2 = 1.00f, f3 = 0.0067f;
         int i3 = 0;
         float f4 = 0.123f;
         float angle = 0.0f;
-        Vec3 col1 = new Vec3(1.0f, 0.0f, 0.2f);
-        Vec4 col2 = new Vec4(0.4f, 0.7f, 0.0f, 0.5f);
+        Vec3 col1 = new(1.0f, 0.0f, 0.2f);
+        Vec4 col2 = new(0.4f, 0.7f, 0.0f, 0.5f);
         int current_fruit = 1;
 
         public void Update()
@@ -159,7 +159,7 @@ class DemoWindowWidgetsSection()
             {
                 BeginTooltip();
                 Text("I am a fancy tooltip");
-                float[] arr = { 0.6f, 0.1f, 1.0f, 0.5f, 0.92f, 0.1f, 0.2f };
+                float[] arr = [0.6f, 0.1f, 1.0f, 0.5f, 0.92f, 0.1f, 0.2f];
                 PlotLines("Curve", ref arr[0], arr.Length);
                 EndTooltip();
             }
@@ -235,7 +235,7 @@ class DemoWindowWidgetsSection()
 
             ColorEdit4("color 2", ref col2);
 
-            string[] fruits = { "Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon" };
+            string[] fruits = ["Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon"];
             ListBox("listbox", ref current_fruit, fruits, fruits.Length);
             SameLine();
             HelpMarker("Using the simplified one-liner ListBox API here.\nRefer to the \"List boxes\" section below for an explanation of how to use the more flexible and general BeginListBox/EndListBox API.");
@@ -400,8 +400,8 @@ class DemoWindowWidgetsSection()
                 {
                     Text("Test paragraph " + n);
                     Vec2 pos = GetCursorPos();
-                    Vec2 marker_min = new Vec2(pos.X + wrap_width, pos.Y);
-                    Vec2 marker_max = new Vec2(pos.X + wrap_width + 10, pos.Y + GetTextLineHeight());
+                    Vec2 marker_min = new(pos.X + wrap_width, pos.Y);
+                    Vec2 marker_max = new(pos.X + wrap_width + 10, pos.Y + GetTextLineHeight());
                     PushTextWrapPos(GetCursorPos().X + wrap_width);
                     if (n == 0)
                     {
@@ -412,12 +412,12 @@ class DemoWindowWidgetsSection()
                         Text("aaaaaaaa bbbbbbbb, c cccccccc,dddddddd. d eeeeeeee   ffffffff. gggggggg!hhhhhhhh");
                     }
 
-                    Vec4 colf = new Vec4(255.0f, 255.0f, 0.0f, 255.0f);
+                    Vec4 colf = new(255.0f, 255.0f, 0.0f, 255.0f);
                     uint col = ColorConvertFloat4ToU32(colf); //ImGuiNative.igColorConvertFloat4ToU32(colf);
 
                     draw_list.AddRect(GetItemRectMin(), GetItemRectMax(), col);
 
-                    Vec4 colf2 = new Vec4(255.0f, 0.0f, 255.0f, 255.0f);
+                    Vec4 colf2 = new(255.0f, 0.0f, 255.0f, 255.0f);
                     uint col2 = ColorConvertFloat4ToU32(colf2); //ImGuiNative.igColorConvertFloat4ToU32(colf2);
 
                     draw_list.AddRectFilled(marker_min, marker_max, col2);
@@ -451,10 +451,10 @@ class DemoWindowWidgetsSection()
 
             Text(my_tex_w + "x" + my_tex_h);
             Vec2 pos = GetCursorScreenPos();
-            Vec2 uv_min = new Vec2(0.0f, 0.0f); // top left
-            Vec2 uv_max = new Vec2(1.0f, 1.0f); // lower right
-            Vec4 tint_col = new Vec4(1.0f, 1.0f, 1.0f, 1.0f); // no tint
-            Vec4 border_col = new Vec4(1.0f, 1.0f, 1.0f, 0.5f); // 50% opaque white
+            Vec2 uv_min = new(0.0f, 0.0f); // top left
+            Vec2 uv_max = new(1.0f, 1.0f); // lower right
+            Vec4 tint_col = new(1.0f, 1.0f, 1.0f, 1.0f); // no tint
+            Vec4 border_col = new(1.0f, 1.0f, 1.0f, 0.5f); // 50% opaque white
 
             Image(my_tex_id, new Vec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col);
 
@@ -471,8 +471,8 @@ class DemoWindowWidgetsSection()
                 else if (region_y > my_tex_h - region_sz) { region_y = my_tex_h - region_sz; }
                 Text(string.Format("Min: ({0},{1})", region_x, region_y));
                 Text(string.Format("Max: ({0},{1})", region_x + region_sz, region_y + region_sz));
-                Vec2 uv0 = new Vec2((region_x) / my_tex_w, (region_y) / my_tex_h);
-                Vec2 uv1 = new Vec2((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h);
+                Vec2 uv0 = new((region_x) / my_tex_w, (region_y) / my_tex_h);
+                Vec2 uv1 = new((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h);
                 Image(my_tex_id, new Vec2(region_sz * zoom, region_sz * zoom), uv0, uv1, tint_col, border_col);
                 EndTooltip();
             }
@@ -481,12 +481,12 @@ class DemoWindowWidgetsSection()
             for (int i = 0; i < 8; i++)
             {
                 PushID(i);
-                int frame_padding = -1 + i;
-                Vec2 size = new Vec2(32.0f, 32.0f);
-                Vec2 uv0 = new Vec2(0.0f, 0.0f);
-                Vec2 uv1 = new Vec2(32.0f / my_tex_w, 32.0f / my_tex_h);
-                Vec4 bg_col = new Vec4(0.0f, 0.0f, 0.0f, 1.0f); // black background
-                Vec4 tint_col2 = new Vec4(1.0f, 1.0f, 1.0f, 1.0f); // no tint
+                //int frame_padding = -1 + i;
+                Vec2 size = new(32.0f, 32.0f);
+                Vec2 uv0 = new(0.0f, 0.0f);
+                Vec2 uv1 = new(32.0f / my_tex_w, 32.0f / my_tex_h);
+                Vec4 bg_col = new(0.0f, 0.0f, 0.0f, 1.0f); // black background
+                Vec4 tint_col2 = new(1.0f, 1.0f, 1.0f, 1.0f); // no tint
                 if (ImageButton($"textured_button_id_{i}", my_tex_id, size, uv0, uv1, bg_col, tint_col2))
                 {
                     pressed_count += 1;
@@ -525,7 +525,7 @@ class DemoWindowWidgetsSection()
                 flags &= ~ImGuiComboFlags.NoArrowButton; // clear the other flag
             }
 
-            string[] items = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
+            string[] items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"];
             string combo_label = items[item_current_idx];
             ImGuiComboFlags flags_cf = flags;
             if (BeginCombo("combo 1", combo_label, flags_cf))
@@ -563,7 +563,7 @@ class DemoWindowWidgetsSection()
         {
             if (!TreeNode("List boxes")) return;
 
-            string[] items = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
+            string[] items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"];
             if (ListBox("listbox 1", ref item_current_idx_lb, items, items.Length)) { }
 
             TreePop();
@@ -572,11 +572,11 @@ class DemoWindowWidgetsSection()
 
     private class SelectablesSubsection
     {
-        bool[] selection = { false, true, false, false, false };
+        readonly bool[] selection = [false, true, false, false, false];
         int selected = -1;
-        bool[] selection_ms = { false, false, false, false, false };
-        bool[] selected_rend = { false, false, false };
-        bool[] selected_align = { true, false, true, false, true, false, true, false, true };
+        readonly bool[] selection_ms = [false, false, false, false, false];
+        readonly bool[] selected_rend = [false, false, false];
+        readonly bool[] selected_align = [true, false, true, false, true, false, true, false, true];
 
         public void Update()
         {
@@ -651,7 +651,7 @@ class DemoWindowWidgetsSection()
                 {
                     for (int x = 0; x < 3; x++)
                     {
-                        Vec2 alignment = new Vec2((float)x / 2.0f, (float)y / 2.0f);
+                        Vec2 alignment = new((float)x / 2.0f, (float)y / 2.0f);
                         string name = string.Format("({0},{1})", alignment.X, alignment.Y);
                         if (x > 0) { SameLine(); }
                         PushStyleVar(ImGuiStyleVar.SelectableTextAlign, alignment);
@@ -739,7 +739,7 @@ class DemoWindowWidgetsSection()
     {
         bool flags_tabs_first_run = true;
         ImGuiTabBarFlags tab_bar_flags = 0;
-        bool[] opened = { true, true, true, true };
+        readonly bool[] opened = [true, true, true, true];
 
         public void Update()
         {
@@ -797,7 +797,7 @@ class DemoWindowWidgetsSection()
                     tab_bar_flags &= ~(ImGuiTabBarFlags.FittingPolicyMask ^ ImGuiTabBarFlags.FittingPolicyScroll);
                 }
 
-                string[] names = { "Artichoke", "Beetroot", "Celery", "Daikon" };
+                string[] names = ["Artichoke", "Beetroot", "Celery", "Daikon"];
                 for (int n = 0; n < opened.Length; n++)
                 {
                     if (n > 0) { SameLine(); }
@@ -832,7 +832,7 @@ class DemoWindowWidgetsSection()
     private class PlotsWidgetsSubsection
     {
         bool animate = true;
-        float[] values = new float[90];
+        readonly float[] values = new float[90];
         int values_offset = 0;
         double refresh_time = 0.0;
         float phase = 0.0f;
@@ -844,7 +844,7 @@ class DemoWindowWidgetsSection()
 
             Checkbox("Animate", ref animate);
 
-            float[] arr = { 0.6f, 0.1f, 1.0f, 0.5f, 0.92f, 0.1f, 0.2f };
+            float[] arr = [0.6f, 0.1f, 1.0f, 0.5f, 0.92f, 0.1f, 0.2f];
             PlotLines("Frame Times", ref arr[0], arr.Length);
 
             if (!animate || refresh_time == 0.0)
@@ -892,8 +892,8 @@ class DemoWindowWidgetsSection()
     private class ColorPickerWidgetsSubsection
     {
         //Color Widgets
-        Vec3 color_vec3 = new Vec3(114.0f / 255.0f, 144.0f / 255.0f, 154 / 255.0f);
-        Vec4 color_vec4 = new Vec4(114.0f / 255.0f, 144.0f / 255.0f, 154 / 255.0f, 200.0f / 255.0f);
+        Vec3 color_vec3 = new(114.0f / 255.0f, 144.0f / 255.0f, 154 / 255.0f);
+        Vec4 color_vec4 = new(114.0f / 255.0f, 144.0f / 255.0f, 154 / 255.0f, 200.0f / 255.0f);
         bool alpha_preview = true;
         bool alpha_half_preview = false;
         bool drag_and_drop = true;
@@ -903,10 +903,10 @@ class DemoWindowWidgetsSection()
         bool alpha_bar = true;
         bool side_preview = true;
         bool ref_color = false;
-        Vec4 ref_color_v = new Vec4(1.0f, 0.0f, 1.0f, 0.5f);
+        Vec4 ref_color_v = new(1.0f, 0.0f, 1.0f, 0.5f);
         int display_mode = 0;
         int picker_mode = 0;
-        Vec4 color_hsv = new Vec4(0.23f, 1.0f, 1.0f, 1.0f);
+        Vec4 color_hsv = new(0.23f, 1.0f, 1.0f, 1.0f);
 
         public void Update()
         {
@@ -1024,10 +1024,10 @@ class DemoWindowWidgetsSection()
 
     private class MultiComponentWidgetsSubsection
     {
-        Vec2 vec2f = new Vec2(0.10f, 0.20f);
-        Vec3 vec3f = new Vec3(0.10f, 0.20f, 0.30f);
-        Vec4 vec4f = new Vec4(0.10f, 0.20f, 0.30f, 0.44f);
-        int[] vec4i = { 1, 5, 100, 255 };
+        Vec2 vec2f = new(0.10f, 0.20f);
+        Vec3 vec3f = new(0.10f, 0.20f, 0.30f);
+        Vec4 vec4f = new(0.10f, 0.20f, 0.30f, 0.44f);
+        readonly int[] vec4i = [1, 5, 100, 255];
 
         public void Update()
         {
@@ -1062,13 +1062,13 @@ class DemoWindowWidgetsSection()
 
     private class VerticalSlidersSubsection
     {
-        float spacing = 4;
+        readonly float spacing = 4;
         int int_value = 0;
-        float[] values_vert = { 0.0f, 0.60f, 0.35f, 0.9f, 0.70f, 0.20f, 0.0f };
+        readonly float[] values_vert = [0.0f, 0.60f, 0.35f, 0.9f, 0.70f, 0.20f, 0.0f];
         float col_red = 1.0f;
         float col_green = 1.0f;
         float col_blue = 1.0f;
-        float[] values2 = { 0.20f, 0.80f, 0.40f, 0.25f };
+        readonly float[] values2 = [0.20f, 0.80f, 0.40f, 0.25f];
 
         public void Update()
         {
@@ -1089,13 +1089,13 @@ class DemoWindowWidgetsSection()
                 PushID(i);
 
                 ColorConvertHSVtoRGB(i / 7.0f, 0.5f, 0.5f, out col_red, out col_green, out col_blue);
-                Vec4 col_slider = new Vec4(col_red, col_green, col_blue, 1.0f);
+                Vec4 col_slider = new(col_red, col_green, col_blue, 1.0f);
                 ColorConvertHSVtoRGB(i / 7.0f, 0.6f, 0.5f, out col_red, out col_green, out col_blue);
-                Vec4 col_slider_hov = new Vec4(col_red, col_green, col_blue, 1.0f);
+                Vec4 col_slider_hov = new(col_red, col_green, col_blue, 1.0f);
                 ColorConvertHSVtoRGB(i / 7.0f, 0.7f, 0.5f, out col_red, out col_green, out col_blue);
-                Vec4 col_slider_act = new Vec4(col_red, col_green, col_blue, 1.0f);
+                Vec4 col_slider_act = new(col_red, col_green, col_blue, 1.0f);
                 ColorConvertHSVtoRGB(i / 7.0f, 0.9f, 0.9f, out col_red, out col_green, out col_blue);
-                Vec4 col_slider_grab = new Vec4(col_red, col_green, col_blue, 1.0f);
+                Vec4 col_slider_grab = new(col_red, col_green, col_blue, 1.0f);
 
                 PushStyleColor(ImGuiCol.FrameBg, col_slider);
                 PushStyleColor(ImGuiCol.FrameBgHovered, col_slider_hov);
@@ -1115,7 +1115,7 @@ class DemoWindowWidgetsSection()
             PushID("set2");
 
             int rows = 3;
-            Vec2 small_slider_size = new Vec2(18, 50);//(float)(int)((160.0f - (rows - 1) * spacing / rows)));
+            Vec2 small_slider_size = new(18, 50);//(float)(int)((160.0f - (rows - 1) * spacing / rows)));
             for (int nx = 0; nx < 4; nx++)
             {
                 if (nx > 0) { SameLine(); }

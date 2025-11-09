@@ -14,13 +14,13 @@ namespace SCMonoGameUtilities.DearImGui.Demos.GuiElements.DemoWindow;
 class DemoWindowTablesSection
 {
     private static readonly TableSizingPolicyDesc[] tableSizingPolicyDescriptions =
-{
+[
         new(ImGuiTableFlags.None,               "Default",                            "Use default sizing policy:\n- ImGuiTableFlags_SizingFixedFit if ScrollX is on or if host window has ImGuiWindowFlags_AlwaysAutoResize.\n- ImGuiTableFlags_SizingStretchSame otherwise."),
         new(ImGuiTableFlags.SizingFixedFit,     "ImGuiTableFlags.SizingFixedFit",     "Columns default to _WidthFixed (if resizable) or _WidthAuto (if not resizable), matching contents width."),
         new(ImGuiTableFlags.SizingFixedSame,    "ImGuiTableFlags.SizingFixedSame",    "Columns are all the same width, matching the maximum contents width.\nImplicitly disable ImGuiTableFlags_Resizable and enable ImGuiTableFlags_NoKeepColumnsVisible."),
         new(ImGuiTableFlags.SizingStretchProp,  "ImGuiTableFlags.SizingStretchProp",  "Columns default to _WidthStretch with weights proportional to their widths."),
         new(ImGuiTableFlags.SizingStretchSame,  "ImGuiTableFlags.SizingStretchSame",  "Columns default to _WidthStretch with same weights.")
-    };
+    ];
 
     private bool disable_indent = false;
 
@@ -542,7 +542,7 @@ class DemoWindowTablesSection
 
     private class ResizableMixedSubsection
     {
-        private ImGuiTableFlags flags = ImGuiTableFlags.SizingFixedFit
+        private readonly ImGuiTableFlags flags = ImGuiTableFlags.SizingFixedFit
             | ImGuiTableFlags.RowBg
             | ImGuiTableFlags.Borders
             | ImGuiTableFlags.Resizable
@@ -670,7 +670,7 @@ class DemoWindowTablesSection
 
     private class PaddingSubsection
     {
-        private string[] text_bufs = Enumerable.Range(0, 3*5).Select(i => "edit me").ToArray(); // Mini text storage for 3x5 cells
+        private readonly string[] text_bufs = [.. Enumerable.Range(0, 3*5).Select(i => "edit me")]; // Mini text storage for 3x5 cells
         private ImGuiTableFlags flags1 = ImGuiTableFlags.BordersV;
         private bool show_headers = false;
         private ImGuiTableFlags flags2 = ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg;
@@ -780,12 +780,13 @@ class DemoWindowTablesSection
     private class SizingPoliciesSubsection()
     {
         private ImGuiTableFlags flags1 = ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.RowBg | ImGuiTableFlags.ContextMenuInBody;
-        private ImGuiTableFlags[] flags = { ImGuiTableFlags.SizingFixedFit, ImGuiTableFlags.SizingFixedSame, ImGuiTableFlags.SizingStretchProp, ImGuiTableFlags.SizingStretchSame };
-        enum ContentsType { CT_ShowWidth, CT_ShortText, CT_LongText, CT_Button, CT_FillButton, CT_InputText };
+        private readonly ImGuiTableFlags[] flags = [ImGuiTableFlags.SizingFixedFit, ImGuiTableFlags.SizingFixedSame, ImGuiTableFlags.SizingStretchProp, ImGuiTableFlags.SizingStretchSame];
         private ImGuiTableFlags flags2 = ImGuiTableFlags.ScrollY | ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.Resizable;
-        private int contents_type = (int)ContentsType.CT_ShowWidth;
+        private int contents_type = (int)ContentsType.ShowWidth;
         private int column_count = 3;
         private string text_buf = "";
+
+        enum ContentsType { ShowWidth, ShortText, LongText, Button, FillButton, InputText };
 
         public void Update(float TEXT_BASE_HEIGHT, float TEXT_BASE_WIDTH, int open_action)
         {
@@ -843,7 +844,7 @@ class DemoWindowTablesSection
             PushItemWidth(TEXT_BASE_WIDTH * 30);
             ComboBoxTableSizingPolicy(ref flags2);
             Combo("Contents", ref contents_type, "Show width\0Short Text\0Long Text\0Button\0Fill Button\0InputText\0");
-            if (contents_type == (int)ContentsType.CT_FillButton)
+            if (contents_type == (int)ContentsType.FillButton)
             {
                 SameLine();
                 HelpMarker(
@@ -874,12 +875,12 @@ class DemoWindowTablesSection
                     var label = $"Hello {column},{row}";
                     switch (contents_type)
                     {
-                        case (int)ContentsType.CT_ShortText: TextUnformatted(label); break;
-                        case (int)ContentsType.CT_LongText: Text($"Some {(column == 0 ? "long" : "longeeer")} text {column},{row}\nOver two lines.."); break;
-                        case (int)ContentsType.CT_ShowWidth: Text($"W: {GetContentRegionAvail().X}"); break; // TODO: format string %.1f equiv...
-                        case (int)ContentsType.CT_Button: Button(label); break;
-                        case (int)ContentsType.CT_FillButton: Button(label, new Vec2(-float.Epsilon, 0.0f)); break;
-                        case (int)ContentsType.CT_InputText: SetNextItemWidth(-float.Epsilon); InputText("##", ref text_buf, 32); break;
+                        case (int)ContentsType.ShortText: TextUnformatted(label); break;
+                        case (int)ContentsType.LongText: Text($"Some {(column == 0 ? "long" : "longeeer")} text {column},{row}\nOver two lines.."); break;
+                        case (int)ContentsType.ShowWidth: Text($"W: {GetContentRegionAvail().X}"); break; // TODO: format string %.1f equiv...
+                        case (int)ContentsType.Button: Button(label); break;
+                        case (int)ContentsType.FillButton: Button(label, new Vec2(-float.Epsilon, 0.0f)); break;
+                        case (int)ContentsType.InputText: SetNextItemWidth(-float.Epsilon); InputText("##", ref text_buf, 32); break;
                     }
                     PopID();
                 }
@@ -1065,9 +1066,9 @@ class DemoWindowTablesSection
     private class ColumnFlagsSubsection
     {
         private readonly int column_count = 3;
-        private readonly string[] column_names = { "One", "Two", "Three" };
-        private ImGuiTableColumnFlags[] column_flags = { ImGuiTableColumnFlags.DefaultSort, ImGuiTableColumnFlags.None, ImGuiTableColumnFlags.DefaultHide };
-        private ImGuiTableColumnFlags[] column_flags_out = { 0, 0, 0 }; // Output from TableGetColumnFlags()
+        private readonly string[] column_names = ["One", "Two", "Three"];
+        private readonly ImGuiTableColumnFlags[] column_flags = [ImGuiTableColumnFlags.DefaultSort, ImGuiTableColumnFlags.None, ImGuiTableColumnFlags.DefaultHide];
+        private readonly ImGuiTableColumnFlags[] column_flags_out = [0, 0, 0]; // Output from TableGetColumnFlags()
 
         public void Update(float TEXT_BASE_HEIGHT, float TEXT_BASE_WIDTH, int open_action)
         {
@@ -1352,7 +1353,7 @@ class DemoWindowTablesSection
     private class TreeViewSubsection
     {
         private readonly MyTreeNode[] nodes =
-        {
+        [
             new("Root with Long Name",           "Folder",      -1,      1,  3), // 0
             new("Music",                         "Folder",      -1,      4,  2), // 1
             new("Textures",                      "Folder",      -1,      6,  3), // 2
@@ -1362,9 +1363,9 @@ class DemoWindowTablesSection
             new("Image001.png",                  "Image file",  203128, -1, -1), // 6
             new("Copy of Image001.png",          "Image file",  203256, -1, -1), // 7
             new("Copy of Image001 (Final2).png", "Image file",  203512, -1, -1), // 8
-        };
+        ];
 
-        private ImGuiTableFlags table_flags = ImGuiTableFlags.BordersV
+        private readonly ImGuiTableFlags table_flags = ImGuiTableFlags.BordersV
             | ImGuiTableFlags.BordersOuterH
             | ImGuiTableFlags.Resizable
             | ImGuiTableFlags.RowBg
@@ -1499,7 +1500,7 @@ class DemoWindowTablesSection
     {
         // Dummy entire-column selection storage
         // FIXME: It would be nice to actually demonstrate full-featured selection using those checkbox.
-        private bool[] column_selected = new bool[3];
+        private readonly bool[] column_selected = new bool[3];
 
         public void Update(int open_action)
         {
@@ -1554,11 +1555,11 @@ class DemoWindowTablesSection
         private const int columns_count = 14;
         private const int rows_count = 12;
 
-        private readonly string[] column_names = { "Track", "cabasa", "ride", "smash", "tom-hi", "tom-mid", "tom-low", "hihat-o", "hihat-c", "snare-s", "snare-c", "clap", "rim", "kick" };
+        private readonly string[] column_names = ["Track", "cabasa", "ride", "smash", "tom-hi", "tom-mid", "tom-low", "hihat-o", "hihat-c", "snare-s", "snare-c", "clap", "rim", "kick"];
 
         private ImGuiTableFlags table_flags = ImGuiTableFlags.SizingFixedFit | ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY | ImGuiTableFlags.BordersOuter | ImGuiTableFlags.BordersInnerH | ImGuiTableFlags.Hideable | ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.HighlightHoveredColumn;
         private ImGuiTableColumnFlags column_flags = ImGuiTableColumnFlags.AngledHeader | ImGuiTableColumnFlags.WidthFixed;
-        private bool[] bools = new bool[columns_count * rows_count]; // Dummy storage selection storage
+        private readonly bool[] bools = new bool[columns_count * rows_count]; // Dummy storage selection storage
         private int frozen_cols = 1;
         private int frozen_rows = 2;
 
@@ -1625,7 +1626,7 @@ class DemoWindowTablesSection
     private class ContextMenusSubsection
     {
         private ImGuiTableFlags flags1 = ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable | ImGuiTableFlags.Borders | ImGuiTableFlags.ContextMenuInBody;
-        private ImGuiTableFlags flags2 = ImGuiTableFlags.Resizable | ImGuiTableFlags.SizingFixedFit | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable | ImGuiTableFlags.Borders;
+        private readonly ImGuiTableFlags flags2 = ImGuiTableFlags.Resizable | ImGuiTableFlags.SizingFixedFit | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable | ImGuiTableFlags.Borders;
 
         public void Update(int open_action)
         {
@@ -1784,11 +1785,11 @@ class DemoWindowTablesSection
 
     private class SortingSubsection
     {
-        private static string[] template_items_names =
-        {
+        private static readonly string[] template_items_names =
+        [
             "Banana", "Apple", "Cherry", "Watermelon", "Grapefruit", "Strawberry", "Mango",
             "Kiwi", "Orange", "Pineapple", "Blueberry", "Plum", "Coconut", "Pear", "Apricot"
-        };
+        ];
 
         private ImGuiTableFlags flags = 
             ImGuiTableFlags.Resizable
@@ -1802,7 +1803,7 @@ class DemoWindowTablesSection
             | ImGuiTableFlags.NoBordersInBody
             | ImGuiTableFlags.ScrollY;
 
-        private List<MyItem> items =
+        private readonly List<MyItem> items =
         [
             .. Enumerable.Range(0, 50).Select(n => new MyItem(
                 n,
@@ -1903,22 +1904,22 @@ class DemoWindowTablesSection
         private enum ContentsType { Text, Button, SmallButton, FillButton, Selectable, SelectableSpanRow };
 
         private int contents_type = (int)ContentsType.SelectableSpanRow;
-        private static string[] contents_type_names = { "Text", "Button", "SmallButton", "FillButton", "Selectable", "Selectable (span row)" };
+        private static readonly string[] contents_type_names = ["Text", "Button", "SmallButton", "FillButton", "Selectable", "Selectable (span row)"];
         private int freeze_cols = 1;
         private int freeze_rows = 1;
-        private static string[] template_items_names =
-        {
+        private static readonly string[] template_items_names =
+        [
             "Banana", "Apple", "Cherry", "Watermelon", "Grapefruit", "Strawberry", "Mango",
             "Kiwi", "Orange", "Pineapple", "Blueberry", "Plum", "Coconut", "Pear", "Apricot"
-        };
+        ];
         private int items_count = template_items_names.Length * 2;
         private float row_min_height = 0.0f; // Auto
         private float inner_width_with_scroll = 0.0f; // Auto-extend
         private bool outer_size_enabled = true;
         private bool show_headers = true;
         private bool show_wrapped_text = false;
-        static List<MyItem> items = new();
-        static List<int> selection = new();
+        static readonly List<MyItem> items = [];
+        static readonly List<int> selection = [];
         static bool items_need_sort = false;
         private bool show_debug_details = false;
         //private ImGuiTextFilter filter;
@@ -1932,7 +1933,7 @@ class DemoWindowTablesSection
             if (open_action != -1) SetNextItemOpen(open_action != 0);
             if (!TreeNode("Advanced")) return;
 
-            Vec2 advanced_outer_size_value = new Vec2(0.0f, TEXT_BASE_HEIGHT * 12);
+            Vec2 advanced_outer_size_value = new(0.0f, TEXT_BASE_HEIGHT * 12);
 
             //ImGui::SetNextItemOpen(true, ImGuiCond_Once); // FIXME-TABLE: Enabling this results in initial clipped first pass on table which tend to affect column sizing
 

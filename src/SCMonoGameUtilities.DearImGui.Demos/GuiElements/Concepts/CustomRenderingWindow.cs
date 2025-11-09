@@ -39,7 +39,7 @@ class CustomRenderingWindow(bool isOpen = false)
 
     private static void PathConcaveShape(ImDrawListPtr draw_list, float x, float y, float sz)
     {
-        Vec2[] pos_norms = { new(0.0f, 0.0f), new(0.3f, 0.0f), new(0.3f, 0.7f), new(0.7f, 0.7f), new(0.7f, 0.0f), new(1.0f, 0.0f), new(1.0f, 1.0f), new(0.0f, 1.0f) };
+        Vec2[] pos_norms = [new(0.0f, 0.0f), new(0.3f, 0.0f), new(0.3f, 0.7f), new(0.7f, 0.7f), new(0.7f, 0.0f), new(1.0f, 0.0f), new(1.0f, 1.0f), new(0.0f, 1.0f)];
         foreach (var p in pos_norms)
             draw_list.PathLineTo(new(x + 0.5f + (int)(sz * p.X), y + 0.5f + (int)(sz * p.Y)));
     }
@@ -143,8 +143,8 @@ class CustomRenderingWindow(bool isOpen = false)
             float rounding = sz / 5.0f;
             int circle_segments = circle_segments_override ? circle_segments_override_v : 0;
             int curve_segments = curve_segments_override ? curve_segments_override_v : 0;
-            Vec2[] cp3 = { new(0.0f, sz * 0.6f), new(sz * 0.5f, -sz * 0.4f), new(sz, sz) }; // Control points for curves
-            Vec2[] cp4 = { new(0.0f, 0.0f), new(sz * 1.3f, sz * 0.3f), new(sz - sz * 1.3f, sz - sz * 0.3f), new(sz, sz) };
+            Vec2[] cp3 = [new(0.0f, sz * 0.6f), new(sz * 0.5f, -sz * 0.4f), new(sz, sz)]; // Control points for curves
+            Vec2[] cp4 = [new(0.0f, 0.0f), new(sz * 1.3f, sz * 0.3f), new(sz - sz * 1.3f, sz - sz * 0.3f), new(sz, sz)];
 
             float x = p.X + 4.0f;
             float y = p.Y + 4.0f;
@@ -152,22 +152,35 @@ class CustomRenderingWindow(bool isOpen = false)
             {
                 // First line uses a thickness of 1.0f, second line uses the configurable thickness
                 float th = n == 0 ? 1.0f : thickness;
-                draw_list.AddNgon(new(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, col, ngon_sides, th); x += sz + spacing;  // N-gon
-                draw_list.AddCircle(new(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, col, circle_segments, th); x += sz + spacing;  // Circle
-                draw_list.AddEllipse(new(x + sz * 0.5f, y + sz * 0.5f), new(sz * 0.5f, sz * 0.3f), col, -0.3f, circle_segments, th); x += sz + spacing;  // Ellipse
-                draw_list.AddRect(new(x, y), new(x + sz, y + sz), col, 0.0f, ImDrawFlags.None, th); x += sz + spacing;  // Square
-                draw_list.AddRect(new(x, y), new(x + sz, y + sz), col, rounding, ImDrawFlags.None, th); x += sz + spacing;  // Square with all rounded corners
-                draw_list.AddRect(new(x, y), new(x + sz, y + sz), col, rounding, corners_tl_br, th); x += sz + spacing;  // Square with two rounded corners
-                draw_list.AddTriangle(new(x + sz * 0.5f, y), new(x + sz, y + sz - 0.5f), new(x, y + sz - 0.5f), col, th); x += sz + spacing;  // Triangle
-                                                                                                                                                //draw_list->AddTriangle(ImVec2(x+sz*0.2f,y), ImVec2(x, y+sz-0.5f), ImVec2(x+sz*0.4f, y+sz-0.5f), col, th);x+= sz*0.4f + spacing; // Thin triangle
 
-                PathConcaveShape(draw_list, x, y, sz);
-                draw_list.PathStroke(col, ImDrawFlags.Closed, th); x += sz + spacing;  // Concave Shape
-                                                                                        //draw_list->AddPolyline(concave_shape, IM_ARRAYSIZE(concave_shape), col, ImDrawFlags_Closed, th);
+                draw_list.AddNgon(new(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, col, ngon_sides, th); // N-gon
+                x += sz + spacing;
+                draw_list.AddCircle(new(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, col, circle_segments, th); // Circle
+                x += sz + spacing;
+                draw_list.AddEllipse(new(x + sz * 0.5f, y + sz * 0.5f), new(sz * 0.5f, sz * 0.3f), col, -0.3f, circle_segments, th); // Ellipse
+                x += sz + spacing;  
+                draw_list.AddRect(new(x, y), new(x + sz, y + sz), col, 0.0f, ImDrawFlags.None, th); // Square
+                x += sz + spacing;  
+                draw_list.AddRect(new(x, y), new(x + sz, y + sz), col, rounding, ImDrawFlags.None, th); // Square with all rounded corners
+                x += sz + spacing;  
+                draw_list.AddRect(new(x, y), new(x + sz, y + sz), col, rounding, corners_tl_br, th); // Square with two rounded corners
+                x += sz + spacing;  
+                draw_list.AddTriangle(new(x + sz * 0.5f, y), new(x + sz, y + sz - 0.5f), new(x, y + sz - 0.5f), col, th); // Triangle
+                x += sz + spacing;
+                ////draw_list->AddTriangle(ImVec2(x+sz*0.2f,y), ImVec2(x, y+sz-0.5f), ImVec2(x+sz*0.4f, y+sz-0.5f), col, th); // Thin triangle
+                ////x+= sz*0.4f + spacing;
 
-                draw_list.AddLine(new(x, y), new(x + sz, y), col, th); x += sz + spacing;  // Horizontal line (note: drawing a filled rectangle will be faster!)
-                draw_list.AddLine(new(x, y), new(x, y + sz), col, th); x += spacing;       // Vertical line (note: drawing a filled rectangle will be faster!)
-                draw_list.AddLine(new(x, y), new(x + sz, y + sz), col, th); x += sz + spacing;  // Diagonal line
+                PathConcaveShape(draw_list, x, y, sz); 
+                draw_list.PathStroke(col, ImDrawFlags.Closed, th); // Concave Shape
+                x += sz + spacing;  
+                //draw_list->AddPolyline(concave_shape, IM_ARRAYSIZE(concave_shape), col, ImDrawFlags_Closed, th);
+
+                draw_list.AddLine(new(x, y), new(x + sz, y), col, th); // Horizontal line (note: drawing a filled rectangle will be faster!)
+                x += sz + spacing;  
+                draw_list.AddLine(new(x, y), new(x, y + sz), col, th); // Vertical line (note: drawing a filled rectangle will be faster!)
+                x += spacing;       
+                draw_list.AddLine(new(x, y), new(x + sz, y + sz), col, th); // Diagonal line
+                x += sz + spacing;  
 
                 // Path
                 draw_list.PathArcTo(new(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, 3.141592f, 3.141592f * -0.5f);
@@ -193,20 +206,32 @@ class CustomRenderingWindow(bool isOpen = false)
             }
 
             // Filled shapes
-            draw_list.AddNgonFilled(new Vec2(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, col, ngon_sides); x += sz + spacing;  // N-gon
-            draw_list.AddCircleFilled(new Vec2(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, col, circle_segments); x += sz + spacing;  // Circle
-            draw_list.AddEllipseFilled(new Vec2(x + sz * 0.5f, y + sz * 0.5f), new Vec2(sz * 0.5f, sz * 0.3f), col, -0.3f, circle_segments); x += sz + spacing;// Ellipse
-            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + sz, y + sz), col); x += sz + spacing;  // Square
-            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + sz, y + sz), col, 10.0f); x += sz + spacing;  // Square with all rounded corners
-            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + sz, y + sz), col, 10.0f, corners_tl_br); x += sz + spacing;  // Square with two rounded corners
-            draw_list.AddTriangleFilled(new Vec2(x + sz * 0.5f, y), new Vec2(x + sz, y + sz - 0.5f), new Vec2(x, y + sz - 0.5f), col); x += sz + spacing;  // Triangle
+            draw_list.AddNgonFilled(new Vec2(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, col, ngon_sides); // N-gon
+            x += sz + spacing;  
+            draw_list.AddCircleFilled(new Vec2(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, col, circle_segments); // Circle
+            x += sz + spacing;  
+            draw_list.AddEllipseFilled(new Vec2(x + sz * 0.5f, y + sz * 0.5f), new Vec2(sz * 0.5f, sz * 0.3f), col, -0.3f, circle_segments); // Ellipse
+            x += sz + spacing;
+            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + sz, y + sz), col); // Square
+            x += sz + spacing;  
+            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + sz, y + sz), col, 10.0f); // Square with all rounded corners
+            x += sz + spacing; 
+            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + sz, y + sz), col, 10.0f, corners_tl_br); // Square with two rounded corners
+            x += sz + spacing;  
+            draw_list.AddTriangleFilled(new Vec2(x + sz * 0.5f, y), new Vec2(x + sz, y + sz - 0.5f), new Vec2(x, y + sz - 0.5f), col); // Triangle
+            x += sz + spacing;
+            ////draw_list->AddTriangleFilled(ImVec2(x+sz*0.2f,y), ImVec2(x, y+sz-0.5f), ImVec2(x+sz*0.4f, y+sz-0.5f), col); // Thin triangle
+            ////x += sz*0.4f + spacing;
 
-            //draw_list->AddTriangleFilled(ImVec2(x+sz*0.2f,y), ImVec2(x, y+sz-0.5f), ImVec2(x+sz*0.4f, y+sz-0.5f), col); x += sz*0.4f + spacing; // Thin triangle
             PathConcaveShape(draw_list, x, y, sz);
-            draw_list.PathFillConcave(col); x += sz + spacing;  // Concave shape
-            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + sz, y + thickness), col); x += sz + spacing;  // Horizontal line (faster than AddLine, but only handle integer thickness)
-            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + thickness, y + sz), col); x += spacing * 2.0f;// Vertical line (faster than AddLine, but only handle integer thickness)
-            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + 1, y + 1), col); x += sz;            // Pixel (faster than AddLine)
+            draw_list.PathFillConcave(col); // Concave shape
+            x += sz + spacing; 
+            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + sz, y + thickness), col); // Horizontal line (faster than AddLine, but only handle integer thickness)
+            x += sz + spacing;  
+            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + thickness, y + sz), col); // Vertical line (faster than AddLine, but only handle integer thickness)
+            x += spacing * 2.0f;
+            draw_list.AddRectFilled(new Vec2(x, y), new Vec2(x + 1, y + 1), col); // Pixel (faster than AddLine)
+            x += sz;          
 
             // Path
             draw_list.PathArcTo(new Vec2(x + sz * 0.5f, y + sz * 0.5f), sz * 0.5f, 3.141592f * -0.5f, 3.141592f);
@@ -226,7 +251,6 @@ class CustomRenderingWindow(bool isOpen = false)
                 Color.Red.PackedValue,
                 Color.Yellow.PackedValue,
                 Color.Green.PackedValue);
-            x += sz + spacing;
 
             Dummy(new Vec2((sz + spacing) * 13.2f, (sz + spacing) * 3.0f));
             PopItemWidth();
@@ -236,7 +260,7 @@ class CustomRenderingWindow(bool isOpen = false)
 
     private class CanvasTab
     {
-        private List<Vec2> points = new();
+        private readonly List<Vec2> points = [];
         private Vec2 scrolling = new(0.0f, 0.0f);
         private bool opt_enable_grid = true;
         private bool opt_enable_context_menu = true;
@@ -290,7 +314,7 @@ class CustomRenderingWindow(bool isOpen = false)
             }
             if (adding_line)
             {
-                points[points.Count - 1] = mouse_pos_in_canvas;
+                points[^1] = mouse_pos_in_canvas;
                 if (!IsMouseDown(ImGuiMouseButton.Left))
                     adding_line = false;
             }

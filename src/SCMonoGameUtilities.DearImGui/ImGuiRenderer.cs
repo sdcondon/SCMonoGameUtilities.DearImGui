@@ -37,7 +37,7 @@ public sealed class ImGuiRenderer : IDisposable
     private byte[] _indexData = [];
     private IndexBuffer _indexBuffer;
 
-    private nint? _fontTextureId;
+    private nint? _fontAtlasTextureId;
     private nint _nextTextureId;
 
     // Input
@@ -47,7 +47,7 @@ public sealed class ImGuiRenderer : IDisposable
     /// <summary>
     /// Initialises a new instance of the <see cref="ImGuiRenderer"/> class.
     /// </summary>
-    /// <param name="game">The <see cref="Game"/> the this renderer is used by.</param>
+    /// <param name="game">The <see cref="Game"/> that this renderer is used by.</param>
     public ImGuiRenderer(Game game)
     {
         // Setup context
@@ -108,25 +108,26 @@ public sealed class ImGuiRenderer : IDisposable
         ImGui.SetCurrentContext(_imGuiContext);
 
         // If the font atlas has already been built, unregister the registered texture first (which also disposes the XNA texture object).
-        if (_fontTextureId.HasValue)
+        if (_fontAtlasTextureId.HasValue)
         {
-            UnregisterTexture(_fontTextureId.Value);
+            UnregisterTexture(_fontAtlasTextureId.Value);
         }
 
-        // Get font texture data from ImGui and copy it to an XNA texture object:
-        _imGuiIO.Fonts.GetTexDataAsRGBA32(out nint pixelsPointer, out int width, out int height, out int bytesPerPixel);
-        byte[] pixels = new byte[width * height * bytesPerPixel];
-        Marshal.Copy(pixelsPointer, pixels, 0, pixels.Length);
-        _imGuiIO.Fonts.ClearTexData(); // Clear ImGui texdata once we're done with it
+        // Get font texture data from ImGui..
+        _imGuiIO.Fonts.GetTexDataAsRGBA32(out nint atlasPointer, out int width, out int height, out int bytesPerPixel);
+        byte[] atlasPixels = new byte[width * height * bytesPerPixel];
+        Marshal.Copy(atlasPointer, atlasPixels, 0, atlasPixels.Length);
+        _imGuiIO.Fonts.ClearTexData(); // Don't forget to tidy up ImGui texdata once we've copied it out
 
-        Texture2D tex2d = new(_graphicsDevice, width, height, false, SurfaceFormat.Color);
-        tex2d.SetData(pixels);
+        // ..and copy it to an XNA texture object:
+        Texture2D atlasTexture = new(_graphicsDevice, width, height, false, SurfaceFormat.Color);
+        atlasTexture.SetData(atlasPixels);
 
         // Register the texture for use (so that our RenderCommandLists method can recognise it
         // and bind the font atlas texture in response), then tell ImGui to use the registered
         // ID for its commands to render text: 
-        _fontTextureId = RegisterTexture(tex2d);
-        _imGuiIO.Fonts.SetTexID(_fontTextureId.Value);
+        _fontAtlasTextureId = RegisterTexture(atlasTexture);
+        _imGuiIO.Fonts.SetTexID(_fontAtlasTextureId.Value);
     }
 
     /// <summary>

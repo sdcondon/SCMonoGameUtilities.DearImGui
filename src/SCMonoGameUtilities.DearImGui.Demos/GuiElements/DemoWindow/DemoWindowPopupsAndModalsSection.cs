@@ -10,7 +10,7 @@ class DemoWindowPopupsAndModalsSection
 {
     // Popups subsection
     int selected_fish = -1;
-    bool[] toggles = { true, false, false, false, false };
+    readonly bool[] toggles = [true, false, false, false, false];
 
     // Context menus subsection
     float value = 0.5f;
@@ -21,7 +21,7 @@ class DemoWindowPopupsAndModalsSection
     bool show_stacked = false;
     bool dont_ask_me_next_time = false;
     int item_mod = 1;
-    Vec4 color = new Vec4(0.4f, 0.7f, 0.0f, 0.5f);
+    Vec4 color = new(0.4f, 0.7f, 0.0f, 0.5f);
 
     public void Update()
     {
@@ -45,7 +45,7 @@ class DemoWindowPopupsAndModalsSection
         TextWrapped("When a popup is active, it inhibits interacting with windows that are behind the popup. " +
         "Clicking outside the popup closes it.");
 
-        string[] names = { "Bream", "Haddock", "Mackerel", "Pollock", "Tilefish" };
+        string[] names = ["Bream", "Haddock", "Mackerel", "Pollock", "Tilefish"];
 
         if (Button("Select.."))
         {
@@ -184,7 +184,7 @@ class DemoWindowPopupsAndModalsSection
             show = true;
         }
 
-        Vec2 center = new Vec2(400, 400);
+        Vec2 center = new(400, 400);
         SetNextWindowPos(center, ImGuiCond.Appearing, new Vec2(0.5f, 0.5f));
 
         if (BeginPopupModal("Delete?", ref show, ImGuiWindowFlags.AlwaysAutoResize))

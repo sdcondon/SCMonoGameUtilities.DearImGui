@@ -1,20 +1,23 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Microsoft.Xna.Framework;
-using SCMonoGameUtilities.DearImGui;
+using SCMonoGameUtilities.DearImGui.Benchmarks.Alts;
+using System.Diagnostics.CodeAnalysis;
 
-namespace SCGraphTheory.Search.Benchmarks;
+namespace SCMonoGameUtilities.DearImGui.Benchmarks;
 
 // weirdness: first one (only) to run seems a bit slower? So put imgui.net one first cos thats way slower anyways..
+[SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Benchmark methods cannot be static")]
 public class ImGuiRendererBenchmarks
 {
     static readonly FromImGuiNetGame fromImGuiNetGame = new();
     static readonly WithIOStateIndirectionGame withIOStateIndirectionGame = new();
     static readonly ProductionGame productionGame = new();
 
-    [Benchmark()]
+    [Benchmark]
+
     public void FromImGuiNET() => fromImGuiNetGame.RunOneFrame();
 
-    [Benchmark()]
+    [Benchmark]
     public void WithIOStateIndirection() => withIOStateIndirectionGame.RunOneFrame();
 
     [Benchmark(Baseline = true)]

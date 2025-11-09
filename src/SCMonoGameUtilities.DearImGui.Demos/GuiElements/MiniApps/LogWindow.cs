@@ -82,7 +82,7 @@ class LogWindow(int maxEntries, bool isOpen = false)
 
         if (Button("[Debug] Add 5 entries"))
         {
-            string[] words = { "Bumfuzzled", "Cattywampus", "Snickersnee", "Abibliophobia", "Absquatulate" };
+            string[] words = ["Bumfuzzled", "Cattywampus", "Snickersnee", "Abibliophobia", "Absquatulate"];
             foreach (string str in words)
             {
                 AppendContent("Frame " + GetFrameCount() + " [info] Hello, current time is " + GetTime() + " here's a word: " + str);
@@ -180,4 +180,16 @@ class LogWindow(int maxEntries, bool isOpen = false)
             return GetEnumerator();
         }
     }
+}
+
+class ExampleLogSourceWindow()
+{
+
+}
+
+// example log class. in a real app this might be a type implementing a "sink"-type interface
+// from a well-known logging framework. E.g. Serilog's ILogSink, or Microsoft.Extensions.Logging's ILogger.
+class LogWindowLogger
+{
+
 }

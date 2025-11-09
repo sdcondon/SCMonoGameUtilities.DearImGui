@@ -42,9 +42,9 @@ class DocumentsWindow(ExampleDocumentStore documentStore, bool isOpen = false)
 
             if (BeginMenu("Open", openDocumentCount < documentMetadata.Count))
             {
-                foreach (var doc in documentMetadata.Where(d => !IsDocumentOpen(d.id, out _)))
+                foreach (var (id, name) in documentMetadata.Where(d => !IsDocumentOpen(d.id, out _)))
                 {
-                    if (MenuItem(doc.name)) OpenDocument(doc.id);
+                    if (MenuItem(name)) OpenDocument(id);
                 }
 
                 EndMenu();
@@ -82,7 +82,7 @@ class DocumentsWindow(ExampleDocumentStore documentStore, bool isOpen = false)
         {
             SameLine();
             PushID(doc.GetHashCode());
-            var isOpen = IsDocumentOpen(doc.id, out var documentTab);
+            var isOpen = IsDocumentOpen(doc.id, out var _);
             if (Checkbox(doc.name, ref isOpen))
             {
                 if (isOpen)

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Runtime.InteropServices;
 
-namespace SCMonoGameUtilities.DearImGui;
+namespace SCMonoGameUtilities.DearImGui.Benchmarks.Alts;
 
 /// <summary>
 /// Renderer for Dear ImGui.

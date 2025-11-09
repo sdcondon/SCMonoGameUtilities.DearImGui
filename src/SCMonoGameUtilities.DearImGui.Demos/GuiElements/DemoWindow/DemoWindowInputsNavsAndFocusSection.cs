@@ -23,7 +23,7 @@ class DemoWindowInputsNavAndFocusSection
         UpdateTabbingSubsection();
     }
 
-    private void UpdateKeyboardMouseAndNavStateSubsection(ImGuiIOPtr io)
+    private static void UpdateKeyboardMouseAndNavStateSubsection(ImGuiIOPtr io)
     {
         if (!TreeNode("Keyboard, Mouse & Navigation State")) return;
 
