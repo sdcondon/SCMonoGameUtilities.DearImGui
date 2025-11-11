@@ -54,20 +54,19 @@ class DemoWindowInputsNavAndFocusSection
         Text("NavInputs down:"); for (int i = 0; i < io.NavInputs.Count; i++) if (io.NavInputs[i] > 0.0f) { SameLine(); Text(string.Format("[{0}] {1}", i, io.NavInputs[i])); }
         Text("NavInputs pressed:"); for (int i = 0; i < io.NavInputs.Count; i++) if (io.NavInputsDownDuration[i] == 0.0f) { SameLine(); Text(string.Format("[{0}]", i)); }
         Text("NavInputs duration:"); for (int i = 0; i < io.NavInputs.Count; i++) if (io.NavInputsDownDuration[i] >= 0.0f) { SameLine(); Text(string.Format("[{0}] {1}", i, io.NavInputsDownDuration[i])); }
-        */
 
         Button("Hovering me sets the\nkeyboard capture flag");
         if (IsItemHovered())
         {
-            // TODO: Not Supported
+            // ..
         }
         SameLine();
         Button("Holding me clears the\nthe keyboard capture flag");
         if (IsItemActive())
         {
-            // TODO: Not Supported
             // ImGui.CaptureKeyboardFromApp(true);
         }
+        */
 
         TreePop();
     }

@@ -98,6 +98,16 @@ public sealed class ImGuiRenderer : IDisposable
     }
 
     /// <summary>
+    /// Gets a value indicating whether the GUI is currently capturing mouse input (because e.g. the mouse is positioned over a window).
+    /// </summary>
+    public bool IsCapturingMouse => _imGuiIO.WantCaptureMouse;
+
+    /// <summary>
+    /// Gets a value indicating whether the GUI is currently capturing keyboard input (because e.g. a text input field is focused).
+    /// </summary>
+    public bool IsCapturingKeyboard => _imGuiIO.WantCaptureKeyboard;
+
+    /// <summary>
     /// Creates a texture and loads the font data from ImGui.
     /// Should be called when the <see cref="GraphicsDevice" /> is initialized but before any rendering is done.
     /// In a <see cref="Game.LoadContent"/> override is ideal.
@@ -125,7 +135,7 @@ public sealed class ImGuiRenderer : IDisposable
 
         // Register the texture for use (so that our RenderCommandLists method can recognise it
         // and bind the font atlas texture in response), then tell ImGui to use the registered
-        // ID for its commands to render text: 
+        // ID in its commands to render text: 
         _fontAtlasTextureId = RegisterTexture(atlasTexture);
         _imGuiIO.Fonts.SetTexID(_fontAtlasTextureId.Value);
     }
