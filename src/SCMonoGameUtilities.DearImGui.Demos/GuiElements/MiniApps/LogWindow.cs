@@ -1,8 +1,6 @@
 ﻿using ImGuiNET;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
@@ -27,11 +25,8 @@ class LogWindow(ExampleLogWindowContentSource contentSource, int maxEntryCount, 
 
     public void Update()
     {
-        if (!IsOpen) return;
-
-        // Again, this window is for demo purposes only, and wouldn't exist in a real app:
-        logGeneratorWindow.Update();
-
+        // Try to keep our content up to date even when we're not open - else we might have a lot 
+        // of catching up to do once we're open again.
         // In a real app, perhaps consider a maximum number of messages to consume per update
         // step. Just in case something goes wrong in your app to the extent that lots of messages
         // are constantly generated (on some thread other than the main game one) - probably don't
@@ -40,6 +35,11 @@ class LogWindow(ExampleLogWindowContentSource contentSource, int maxEntryCount, 
         {
             content.Add(message);
         }
+
+        if (!IsOpen) return;
+
+        // Again, this window is for demo purposes only, and wouldn't exist in a real app:
+        logGeneratorWindow.Update();
 
         SetNextWindowSize(new Vector2(500, 400), ImGuiCond.FirstUseEver);
         if (Begin("Example: Log", ref IsOpen))
@@ -109,69 +109,14 @@ class LogWindow(ExampleLogWindowContentSource contentSource, int maxEntryCount, 
             SetScrollHereY(1.0f);
         }
     }
-
-    /// <summary>
-    /// <para>
-    /// A basic circular buffer type used for storing the log window's content -
-    /// on the assumption that we don't want it to just grow forever.
-    /// </para>
-    /// <para>
-    /// NB: Of course, in a real app this wouldn't necessarily be an inner type like this.
-    /// Just wanted to keep all the examples as self-contained as possible.
-    /// </para>
-    /// </summary>
-    /// <typeparam name="T">The type of elements to be stored.</typeparam>
-    /// <param name="maxSize">The maximum number of elements that the buffer will store. The oldest elements will be dropped once this is size is reached.</param>
-    private class RingBuffer<T>(int maxSize) : IEnumerable<T>
-    {
-        // We *could* use something that automatically resizes itself (e.g. a List<>), so that we require
-        // less memory while at less than capacity. However, on the assumption that we will be at capacity
-        // most of the time, there isn't much point, and the code is simpler if we just use an array.
-        public readonly T[] content = new T[maxSize];
-        private int headIndex = 0;
-        private int count = 0;
-
-        public void Add(T item)
-        {
-            content[(headIndex + count) % content.Length] = item;
-
-            if (count < content.Length)
-            {
-                count++;
-            }
-            else
-            {
-                headIndex++;
-                headIndex %= content.Length;
-            }
-        }
-
-        public void Clear()
-        {
-            Array.Clear(content); // NB: actually clear the array to avoid leaks when T is a reference type
-            headIndex = 0;
-            count = 0;
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            for (int i = 0; i < count; i++)
-            {
-                yield return content[(headIndex + i) % content.Length];
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
 }
 
 // Example source of content for a log window, separate from the window itself for separation of concerns.
-// A real app would probably want to do the same thing, though the implementation might look very different.
+// While a real app could probably use LogWindow more or less unchanged, its equivalent of the code found in
+// this class could look very different, depending on exactly what "logs" are being displayed.
+//
 // This particular implementation just grabs trace (including debug) messages.
-// TODO: Should probably demo (structured?) logging too - e.g. MS Logging ILogger, Serilog LogSink
+// TODO: Should probably demo capture of (structured?) logging too - e.g. MS Logging ILogger, Serilog LogSink
 class ExampleLogWindowContentSource
 {
     private readonly ConcurrentQueue<string> messageQueue = new();
@@ -202,7 +147,7 @@ class ExampleLogWindowContentSource
 // Window that offers buttons to write Debug and Trace messages, for demo purposes. Obviously wouldn't feature
 // in a real app.
 //
-// NB: There's no dependency on the logging window or content source here - messages are going via  dotnet's
+// NB: There's no dependency on the logging window or content source here - messages are going via dotnet's
 // tracing infrastructure.
 class LogGeneratorWindow(bool isOpen = false)
 {

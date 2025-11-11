@@ -28,7 +28,7 @@ public class Program : Game
     private readonly ModelAndControls modelAndControls;
     private readonly ModelViewerWindow modelViewerWindow;
     private readonly LogWindow logWindow = new(new ExampleLogWindowContentSource(), maxEntryCount: 1000);
-    private readonly ConsoleWindow consoleWindow = new();
+    private readonly ConsoleWindow consoleWindow = new(new ExampleConsole());
     private readonly DocumentsWindow documentsWindow = new(new ExampleDocumentStore());
     private readonly AssetsBrowserWindow assetsBrowserWindow = new();
     private readonly PropertyEditorWindow propertyEditorWindow = new();
